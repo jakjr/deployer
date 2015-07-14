@@ -1,6 +1,7 @@
 {
     "name": "jakjr/deployer",
     "description": "Um pacote para auxiliar no deploy utilizando SVN e Jenkins",
+    "license": "MIT",
     "authors": [
         {
             "name": "João Alfredo Knopik Junior",
