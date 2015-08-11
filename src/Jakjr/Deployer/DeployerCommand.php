@@ -162,7 +162,10 @@ class DeployerCommand extends Command {
 
     private function makeBuild()
     {
-        $jenkinsBuildCommand = "curl -s -X POST --user '{$this->user}:{$this->pass}' 'http://jenkins-ci.celepar.parana/job/ppd-tag/buildWithParameters?TAG={$this->newTag}'";
+        $dirArray = explode('/', getcwd());
+        $buildName = end($dirArray) . '-tag';
+
+        $jenkinsBuildCommand = "curl -s -X POST --user '{$this->user}:{$this->pass}' 'http://jenkins-ci.celepar.parana/job/$buildName/buildWithParameters?TAG={$this->newTag}'";
         @exec($jenkinsBuildCommand, $return, $returnVar);
         if ($returnVar) {
             throw new Exception($return[0]);
