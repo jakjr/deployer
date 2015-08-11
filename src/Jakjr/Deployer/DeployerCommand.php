@@ -13,6 +13,7 @@ class DeployerCommand extends Command {
     private $pass;
     private $trunkUrl;
     private $newTagUrl;
+    private $jenkinsUrl;
 
 	/**
 	 * The console command name.
@@ -99,11 +100,12 @@ class DeployerCommand extends Command {
 
     private function getCredentials()
     {
-        if ( (!isset($_ENV['DEPLOY_USER'])) || (!isset($_ENV['DEPLOY_PASS'])) ) {
+        if ( (!isset($_ENV['DEPLOY_USER'])) || (!isset($_ENV['DEPLOY_PASS'])) || (!isset($_ENV['DEPLOY_JENKINS_URL'])) ) {
             throw new Exception('Variável de ambiente DEPLOY* não configurada em .env.local.php');
         }
         $this->user = $_ENV['DEPLOY_USER'];
         $this->pass = $_ENV['DEPLOY_PASS'];
+        $this->jenkinsUrl = $_ENV['DEPLOY_JENKINS_URL'];
     }
 
     private function makeUrls()
@@ -165,7 +167,7 @@ class DeployerCommand extends Command {
         $dirArray = explode('/', getcwd());
         $buildName = end($dirArray) . '-tag';
 
-        $jenkinsBuildCommand = "curl -s -X POST --user '{$this->user}:{$this->pass}' 'http://jenkins-ci.celepar.parana/job/$buildName/buildWithParameters?TAG={$this->newTag}'";
+        $jenkinsBuildCommand = "curl -s -X POST --user '{$this->user}:{$this->pass}' '{$this->jenkinsUrl}/buildWithParameters?TAG={$this->newTag}'";
         @exec($jenkinsBuildCommand, $return, $returnVar);
         if ($returnVar) {
             throw new Exception($return[0]);
